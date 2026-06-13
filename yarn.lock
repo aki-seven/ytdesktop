@@ -5780,10 +5780,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"material-symbols@npm:^0.12.0":
-  version: 0.12.0
-  resolution: "material-symbols@npm:0.12.0"
-  checksum: 10c0/8f2971522d06960cbcf5f6a718a736ee0c50d636506f7dd65902e23adea761f64d10f0a95a13866367c3740d501d623228548ecc93273f7b5e115f4912a1fee8
+"material-symbols@npm:^0.45.1":
+  version: 0.45.1
+  resolution: "material-symbols@npm:0.45.1"
+  checksum: 10c0/e6a28bf532a08bbb2583ab19f3793889fb09918a0e9b244008558a49a00af6032c6b4fe5243a2ee448e3096d947014336aa65b834725be99529be3c502d85006
   languageName: node
   linkType: hard
 
@@ -8845,7 +8845,7 @@ __metadata:
     fastify-socket.io: "npm:^5.1.0"
     husky: "npm:^9.1.7"
     lint-staged: "npm:^15.5.2"
-    material-symbols: "npm:^0.12.0"
+    material-symbols: "npm:^0.45.1"
     prettier: "npm:3.8.4"
     socket.io: "npm:^4.8.3"
     ts-node: "npm:^10.9.2"
