@@ -263,7 +263,7 @@ log.info("Created memory store");
 
 function shouldDisableUpdates() {
   // macOS can't have auto updates without a code signature
-  // linux is not supported on the update server https://github.com/ytdesktop/ytdesktop/issues/1247 (hanging issue resolved)
+  // linux is not supported on the update server https://github.com/aki-seven/ytdesktop/issues/1247 (hanging issue resolved)
   if (process.platform !== "win32") return true;
 }
 
@@ -987,7 +987,7 @@ const createOrShowSettingsWindow = (): void => {
   });
 
   settingsWindow.webContents.setWindowOpenHandler(details => {
-    if (details.url === "https://github.com/ytdesktop/ytdesktop" || details.url === "https://ytdesktop.github.io/") {
+    if (details.url === "https://github.com/aki-seven/ytdesktop" || details.url === "https://ytdesktop.github.io/") {
       shell.openExternal(details.url);
     }
 

@@ -9,8 +9,8 @@ updates:
     labels:
       - "Dependencies"
     reviewers:
-      - "novustheory"
-    target-branch: "development"
+      - "aki-seven"
+    target-branch: "main"
     open-pull-requests-limit: 10
     commit-message:
       prefix: "⬆️ "

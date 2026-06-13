@@ -99,7 +99,7 @@ export default class CustomCSS implements IIntegration {
       const content: string = fs.readFileSync(cssPath, "utf8");
 
       /* To do in the future...
-        Have an alternative means of checking if YTM has loaded
+        Have an alternative means of checking if ytView has loaded
         as I'd rather keep away from constantly having an event for if `ytView:loaded` is emitted
         and only needed for the initial load of the app */
       if (this.ipcListener) {

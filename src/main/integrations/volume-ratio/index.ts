@@ -17,7 +17,7 @@ export default class VolumeRatio implements IIntegration {
 
   public provide(ytView: BrowserView): void {
     if (ytView !== this.ytView) {
-      // The YTM view object has changed from what we knew it was. Invalidate the state as the YTM view was recreated
+      // The ytView object has changed from what we knew it was. Invalidate the state as the ytView was recreated
       this.hasInjected = false;
       this.waitForYTView = true;
     }

@@ -28,7 +28,7 @@ declare global {
       // Main window specific
       switchFocus(context: "main" | "yt"): void;
 
-      // YTM view specific
+      // ytView specific
       ytViewNavigateDefault(): void;
       ytViewRecreate(): void;
 
