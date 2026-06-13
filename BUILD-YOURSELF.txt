@@ -1,0 +1,104 @@
+=============================================
+  YouTube Desktop App - Build Guide
+=============================================
+
+PREREQUISITES
+=============
+
+1. Git
+   https://git-scm.com/downloads
+
+2. Node.js v20 (REQUIRED - do NOT use v22/v24/v26)
+   https://nodejs.org/dist/v20.9.0/node-v20.9.0-win-x64.zip
+   Extract and add to PATH, or use nvm-windows to manage versions.
+
+   WARNING: Node.js v26+ breaks electron-packager's zip extraction.
+   The build will silently fail with no output if using a newer version.
+
+3. Yarn 4.5.1
+   The project includes the Yarn Berry binary at .yarn/releases/yarn-4.5.1.cjs
+   Do NOT install yarn globally - use the bundled version via:
+     node .yarn/releases/yarn-4.5.1.cjs <command>
+
+
+PLATFORM-SPECIFIC REQUIREMENTS
+===============================
+
+Windows:
+  - Visual Studio Build Tools or full Visual Studio with "Desktop development with C++" workload
+    https://visualstudio.microsoft.com/visual-cpp-build-tools/
+  - Windows Defender: Add folder exclusions for the project directory, electron cache, and temp folders
+    to prevent the electron binary extraction from being killed silently.
+    Path: Windows Security > Virus & threat protection > Manage settings > Exclusions > Add folder
+
+Linux (Debian/Ubuntu):
+  sudo apt-get install fakeroot dpkg
+
+Linux (Fedora/RHEL):
+  sudo dnf install rpm-build
+
+macOS:
+  Xcode Command Line Tools: xcode-select --install
+
+
+SETUP
+=====
+
+1. Clone the repository:
+   git clone https://github.com/aki-seven/ytdesktop.git
+   cd ytdesktop
+
+2. Install dependencies:
+   node .yarn/releases/yarn-4.5.1.cjs install
+
+
+BUILD COMMANDS
+==============
+
+Build a distributable for your current platform:
+  node .yarn/releases/yarn-4.5.1.cjs make
+
+Build for a specific architecture:
+  node .yarn/releases/yarn-4.5.1.cjs make --arch x64
+  node .yarn/releases/yarn-4.5.1.cjs make --arch arm64
+
+Build output locations:
+  Windows: out\make\squirrel.windows\<arch>\
+  Linux:   out\make\deb\<arch>\ and out\make\rpm\<arch>\
+  macOS:   out\make\zip\<arch>\
+
+
+DEVELOPMENT
+===========
+
+Start the app in development mode:
+  node .yarn/releases/yarn-4.5.1.cjs start
+
+Lint the codebase:
+  node .yarn/releases/yarn-4.5.1.cjs lint
+
+
+TROUBLESHOOTING
+===============
+
+Problem: Build completes but no output in out/ directory
+  Cause:  Node.js v26+ breaks the electron binary extraction.
+  Fix:    Use Node.js v20.9.0.
+
+Problem: "EPERM: operation not permitted" during install
+  Cause:  Another node process is locking files.
+  Fix:    Kill all node processes and retry.
+
+Problem: "Cannot find module '.yarn/releases/yarn-4.5.1.cjs'"
+  Cause:  The yarn release file is missing.
+  Fix:    Download it:
+      mkdir .yarn\releases
+      curl -Lo .yarn/releases/yarn-4.5.1.cjs https://raw.githubusercontent.com/yarnpkg/berry/refs/tags/%40yarnpkg/cli/4.5.1/packages/yarnpkg-cli/bin/yarn.js
+
+Problem: Electron binary extraction hangs or produces no output
+  Cause:  Windows Defender or antivirus is killing the extraction.
+  Fix:    Add the project folder, electron cache, and temp folders to antivirus exclusions.
+
+Problem: Native module build errors on Windows
+  Cause:  Missing Visual Studio Build Tools.
+  Fix:    Install Visual Studio Build Tools with "Desktop development with C++" workload.

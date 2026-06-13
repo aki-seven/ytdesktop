@@ -41,13 +41,30 @@ const config: ForgeConfig = {
     ],
 appCategoryType: "public.app-category.video",
 
-    asar: true
+    asar: true,
+    packageAfterCopy: async (_forgeConfig, _buildPath, _electronVersion, platform, arch) => {
+      const fs = await import("fs");
+      const path = await import("path");
+
+      const srcModules = path.default.join(process.cwd(), "node_modules", "@ghostery", "adblocker-electron-preload");
+      const srcContent = path.default.join(process.cwd(), "node_modules", "@ghostery", "adblocker-content");
+      const asarModules = path.default.join(_buildPath, "node_modules", "@ghostery", "adblocker-electron-preload");
+      const asarContent = path.default.join(_buildPath, "node_modules", "@ghostery", "adblocker-content");
+
+      if (fs.default.existsSync(srcModules)) {
+        fs.default.cpSync(srcModules, asarModules, { recursive: true });
+      }
+      if (fs.default.existsSync(srcContent)) {
+        fs.default.cpSync(srcContent, asarContent, { recursive: true });
+      }
+    }
 
   },
   rebuildConfig: {},
   makers: [
     new MakerSquirrel({
-      iconUrl: `https://raw.githubusercontent.com/${process.env.YTD_UPDATE_FEED_OWNER ?? "ytdesktop"}/ytdesktop/7ccf3167573a452e389ba3546c6ee93bb05d7ef8/src/assets/icons/ytd.ico`
+      iconUrl: `https://raw.githubusercontent.com/aki-seven/ytdesktop/main/src/assets/icons/ytd.ico`,
+      setupIcon: "./src/assets/icons/ytd.ico"
     }),
     new MakerZIP({}, ["darwin"]),
     new MakerRpm({

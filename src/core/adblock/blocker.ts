@@ -144,7 +144,7 @@ export async function injectYouTubeAdHiding(webContents: Electron.WebContents): 
             const originalFetch = window.fetch;
             window.fetch = async (...args) => {
                 const response = await originalFetch.apply(this, args);
-                if (args[0] && typeof args[0] === 'string' && args[0].includes('youtube.com/api')) {
+                if (args[0] && typeof args[0] === 'string' && (args[0].includes('/youtubei/') || args[0].includes('get_watch_next') || args[0].includes('/browse'))) {
                     const originalJson = response.json.bind(response);
                     response.json = async () => {
                         try {
@@ -159,7 +159,7 @@ export async function injectYouTubeAdHiding(webContents: Electron.WebContents): 
             };
 
             const observer = new MutationObserver(() => {
-                document.querySelectorAll('.ytp-ad-module, .ytp-ad-overlay-container, .ytp-ad-text-overlay, .video-ads, ytm-ad-slot-renderer, ytm-ad-skip-button-renderer, ytm-instream-ad-slot-renderer').forEach(el => {
+                document.querySelectorAll('.ytp-ad-module, .ytp-ad-overlay-container, .ytp-ad-text-overlay, .video-ads, ytm-ad-slot-renderer, ytm-ad-skip-button-renderer, ytm-instream-ad-slot-renderer, ytd-ad-slot-renderer, ytd-display-ad-renderer, ytd-in-feed-ad-renderer, ytd-promoted-sparkles-web-renderer').forEach(el => {
                     el.remove();
                 });
             });
@@ -174,7 +174,7 @@ export async function injectYouTubeAdHiding(webContents: Electron.WebContents): 
 
             window.addEventListener('load', () => {
                 setInterval(() => {
-                    document.querySelectorAll('.ytp-ad-module, .ytp-ad-overlay-container, .ytp-ad-text-overlay, .video-ads, .ytp-ad-skip-button, .ytp-ad-skip-button-modern, [class*="ad-showing"], ytm-ad-slot-renderer, ytm-ad-skip-button-renderer, ytm-instream-ad-slot-renderer').forEach(el => {
+                    document.querySelectorAll('.ytp-ad-module, .ytp-ad-overlay-container, .ytp-ad-text-overlay, .video-ads, .ytp-ad-skip-button, .ytp-ad-skip-button-modern, ytm-ad-slot-renderer, ytm-ad-skip-button-renderer, ytm-instream-ad-slot-renderer, ytd-ad-slot-renderer, ytd-display-ad-renderer, ytd-in-feed-ad-renderer, ytd-promoted-sparkles-web-renderer').forEach(el => {
                         el.remove();
                     });
                 }, 500);
@@ -215,11 +215,14 @@ export async function injectYouTubeAutoSkip(webContents: Electron.WebContents): 
             const getVideo = () => getPlayer()?.querySelector('video');
 
             const findSkipButton = () => {
-                const player = getPlayer();
-                if (!player) return null;
                 for (const sel of SKIP_SELECTORS) {
-                    const btn = player.querySelector(sel);
+                    let btn = document.querySelector(sel);
                     if (btn) return btn;
+                    const player = getPlayer();
+                    if (player) {
+                        btn = player.querySelector(sel);
+                        if (btn) return btn;
+                    }
                 }
                 return null;
             };

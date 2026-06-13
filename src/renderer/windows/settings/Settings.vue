@@ -293,7 +293,7 @@ window.ytd.handleUpdateDownloaded(() => {
         </div>
         <div v-if="currentTab === 1" class="general-tab">
           <YTDSetting v-if="!isDarwin" v-model="hideToTrayOnClose" type="checkbox" name="Hide to tray on close" @change="settingsChanged" />
-          <YTDSetting v-model="adBlockingEnabled" type="checkbox" beta name="Block ads" description="Blocks ads and tracking requests from YouTube" @change="settingsChanged" />
+          <!--<YTDSetting v-model="adBlockingEnabled" type="checkbox" beta name="Block ads" description="Blocks ads and tracking requests from YouTube" @change="settingsChanged" />-->
           <YTDSetting v-model="showNotificationOnSongChange" type="checkbox" name="Show notification on song change" @change="settingsChanged" />
           <YTDSetting v-model="startOnBoot" type="checkbox" name="Start on boot" @change="settingsChanged" />
           <!--<div class="setting">

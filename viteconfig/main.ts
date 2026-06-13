@@ -31,7 +31,7 @@ export default defineConfig({
   },
   define: {
     YTD_DISABLE_UPDATES: devBuild,
-    YTD_UPDATE_FEED_OWNER: process.env.YTD_UPDATE_FEED_OWNER ? `'${process.env.YTD_UPDATE_FEED_OWNER}'` : "'ytdesktop'",
+    YTD_UPDATE_FEED_OWNER: process.env.YTD_UPDATE_FEED_OWNER ? `'${process.env.YTD_UPDATE_FEED_OWNER}'` : "'aki-seven'",
     YTD_UPDATE_FEED_REPOSITORY: process.env.YTD_UPDATE_FEED_REPOSITORY ? `'${process.env.YTD_UPDATE_FEED_REPOSITORY}'` : "'ytdesktop'"
   }
 });
