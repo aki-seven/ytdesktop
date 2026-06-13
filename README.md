@@ -1,9 +1,7 @@
 # YouTube Desktop App
-### Now with a Fresh new Codebase 😉
 
 ![YouTube Desktop App](.github/images/readme_main_app.png)
 
-[![Discord][discord-img]][discord-url]
 [![Gitmoji][gitmoji-img]][gitmoji-url]
 [![GitHub license][license-img]][license-url]
 [![GitHub release][release-img]][release-url]
@@ -25,21 +23,22 @@ TODO: Write guides for v2. While these may still be helpful they are geared towa
 <!--
 ### UPDATE THESE PLATFORMS ###
 - Chocolatey: ```choco install ytdesktop```
--->
+
 - Winget: ```winget install "YouTube Desktop App"``` or ```winget install Ytdesktop.Ytdesktop```
-- Scoop: ```scoop bucket add extras``` then ```scoop install ytdesktop``` (Community Maintained)
+- Scoop: ```scoop bucket add extras``` then ```scoop install ytdesktop``` (Community Maintained)-->
 - Binaries: <https://github.com/aki-seven/ytdesktop/releases>
 
 #### Linux
 <!--
 ### UPDATE THESE PLATFORMS ###
 - Snap: <https://snapcraft.io/youtube-desktop-app>
--->
-- Arch Linux (AUR): <https://aur.archlinux.org/packages/ytdesktop> (Community Maintained)
+
+- Arch Linux (AUR): <https://aur.archlinux.org/packages/ytdesktop> (Community Maintained)-->
 - Binaries: <https://github.com/aki-seven/ytdesktop/releases>
 
 #### Mac
-- Brew: ```brew install --cask ytdesktop-youtube``` (Community Maintained)
+<!--
+- Brew: ```brew install --cask ytdesktop-youtube``` (Community Maintained)-->
 - Binaries: <https://github.com/aki-seven/ytdesktop/releases>
 
 # Developing
@@ -72,11 +71,6 @@ To download the full suite of Tools/Software needed to build the app it is recom
 
 This will start downloading and installing, and may require a few prompts here and there to finalise everything.
 
-<!--
-TODO: Fill this information in
-## MacOS
-*to do*
--->
 
 ## Linux
 Building the project on Linux only requires you to install:
@@ -85,19 +79,10 @@ Building the project on Linux only requires you to install:
 
 *please note that by default both packages are built if you try building this application on a linux distro*
 
-<!--
-### Note to the note, I suspect this has been fixed now, testing myself I was able to run the software without anything extra, although did have to sepecify `--disable-gpu` to run.
-**Note:** If you're using Windows Subsystem for Linux (WSL2), [see this guide][more] or use `node` from the command prompt. -->
-
-<!--
-Project currently doesn't have Locales, so Ignore this for now.
-## To contribute for your own language
-Navigate to [ytdesktop-locales](https://github.com/ytdesktop/ytdesktop-locales) and follow the instructions there.
--->
 
 ## Contributors
 
-A Thank you to all the contributors throughout the project, without their work this project would have just been a small project and never expanded to where it is now.
+A Thank you to all the original contributors of this project.
 
 [<img alt="adlerluiz" src="https://avatars.githubusercontent.com/u/2112638?v=4&s=240" width="120" height="120">](https://github.com/adlerluiz)
 [<img alt="NovusTheory" src="https://avatars.githubusercontent.com/u/3434404?v=4&s=240" width="120" height="120">](https://github.com/NovusTheory)
