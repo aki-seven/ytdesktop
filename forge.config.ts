@@ -98,8 +98,9 @@ appCategoryType: "public.app-category.video",
     {
       name: "@electron-forge/publisher-github",
       config: {
+        authToken: process.env.GITHUB_TOKEN,
         repository: {
-        owner: process.env.YTD_UPDATE_FEED_OWNER ?? "ytdesktop",
+        owner: process.env.YTD_UPDATE_FEED_OWNER ?? "aki-seven",
         name: process.env.YTD_UPDATE_FEED_REPOSITORY ?? "ytdesktop"
         }
       }

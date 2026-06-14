@@ -49,7 +49,7 @@ jobs:
         run: yarn publish:dry --arch ${{ matrix.arch }}
 
       - name: Publish From Dry (${{ matrix.arch }})
-        run: yarn publish:fromdry
+        run: yarn publish:fromdry --arch ${{ matrix.arch }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           YTD_UPDATE_FEED_OWNER: ${{ vars.YTD_UPDATE_FEED_OWNER }}
