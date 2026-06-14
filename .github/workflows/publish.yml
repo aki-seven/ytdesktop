@@ -44,6 +44,7 @@ jobs:
 
       - name: Publish Dry (${{ matrix.arch }})
         env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           YTD_UPDATE_FEED_OWNER: ${{ vars.YTD_UPDATE_FEED_OWNER }}
           YTD_UPDATE_FEED_REPOSITORY: ${{ vars.YTD_UPDATE_FEED_REPOSITORY }}
         run: yarn publish:dry --arch ${{ matrix.arch }}
