@@ -23,7 +23,7 @@ jobs:
           - os: 'ubuntu-latest'
             arch: 'arm64'
         
-      fail-fast: true # Explicitly failing fast because this is a publish. We want to bail the entire release if something went wrong with another build
+      fail-fast: true
 
     runs-on: ${{ matrix.os }}
 
@@ -42,16 +42,21 @@ jobs:
       - name: Install dependencies
         run: yarn --immutable
 
-      - name: Publish Dry (${{ matrix.arch }})
+      - name: Build (${{ matrix.arch }})
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           YTD_UPDATE_FEED_OWNER: ${{ vars.YTD_UPDATE_FEED_OWNER }}
           YTD_UPDATE_FEED_REPOSITORY: ${{ vars.YTD_UPDATE_FEED_REPOSITORY }}
-        run: yarn publish:dry --arch ${{ matrix.arch }}
+        run: yarn make --arch ${{ matrix.arch }}
 
-      - name: Publish From Dry (${{ matrix.arch }})
-        run: yarn publish:fromdry --arch ${{ matrix.arch }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          YTD_UPDATE_FEED_OWNER: ${{ vars.YTD_UPDATE_FEED_OWNER }}
-          YTD_UPDATE_FEED_REPOSITORY: ${{ vars.YTD_UPDATE_FEED_REPOSITORY }}
+      - name: Upload artifacts to release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          files: |
+            out/make/**/*.exe
+            out/make/**/*.nupkg
+            out/make/**/*.deb
+            out/make/**/*.rpm
+            out/make/**/*.zip
+            out/make/**/*.dmg
+            out/make/**/*.AppImage
