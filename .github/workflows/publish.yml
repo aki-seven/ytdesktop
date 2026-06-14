@@ -16,6 +16,9 @@ jobs:
           # Mitigation for Electron Forge naming conflict. See #1183.
           - os: 'windows-latest'
             arch: 'arm64'
+          # GitHub Actions has no native arm64 Ubuntu runners
+          - os: 'ubuntu-latest'
+            arch: 'arm64'
         
       fail-fast: true # Explicitly failing fast because this is a publish. We want to bail the entire release if something went wrong with another build
 
