@@ -1,7 +1,7 @@
 {
   "name": "youtube-desktop-app",
   "productName": "YouTube Desktop App",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "YouTube Desktop App",
   "main": ".vite/main/index.js",
   "private": true,
