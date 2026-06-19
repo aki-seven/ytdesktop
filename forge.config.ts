@@ -54,10 +54,6 @@ const config: ForgeConfig = {
         {
           src: path.join(projectRoot, "node_modules", "@ghostery", "adblocker-content"),
           dest: path.join(_buildPath, "node_modules", "@ghostery", "adblocker-content")
-        },
-        {
-          src: path.join(projectRoot, "node_modules", "@ghostery", "adblocker-electron"),
-          dest: path.join(_buildPath, "node_modules", "@ghostery", "adblocker-electron")
         }
       ];
 
@@ -66,12 +62,6 @@ const config: ForgeConfig = {
           fs.mkdirSync(path.dirname(mod.dest), { recursive: true });
           fs.cpSync(mod.src, mod.dest, { recursive: true });
         }
-      }
-
-      const srcPkg = path.join(projectRoot, "package.json");
-      const destPkg = path.join(_buildPath, "package.json");
-      if (fs.existsSync(srcPkg) && !fs.existsSync(destPkg)) {
-        fs.copyFileSync(srcPkg, destPkg);
       }
     }
   },
