@@ -26,14 +26,7 @@ export default defineConfig({
   build: {
     outDir: ".vite/main",
     rollupOptions: {
-      external: [
-        "bufferutil",
-        "utf-8-validate",
-        "@ghostery/adblocker-electron",
-        "@ghostery/adblocker-electron-preload",
-        "@ghostery/adblocker",
-        "@ghostery/adblocker-content"
-      ]
+      external: ["bufferutil", "utf-8-validate"]
     }
   },
   define: {

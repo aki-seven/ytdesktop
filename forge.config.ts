@@ -6,9 +6,6 @@ import { MakerRpm } from "@electron-forge/maker-rpm";
 import { VitePlugin } from "@electron-forge/plugin-vite";
 import { FusesPlugin } from "@electron-forge/plugin-fuses";
 import { FuseV1Options, FuseVersion } from "@electron/fuses";
-import * as fs from "fs";
-import * as path from "path";
-
 // There is probably a better way to do this, such as fetching it directly from forge
 let makerArch = null;
 for (let i = 0; i < process.argv.length; i++) {
@@ -41,35 +38,9 @@ const config: ForgeConfig = {
         schemes: ["ytd"]
       }
     ],
-appCategoryType: "public.app-category.video",
+    appCategoryType: "public.app-category.video",
 
-    asar: true,
-    asarUnpack: [
-      "node_modules/@ghostery/**"
-    ],
-    packageAfterCopy: async (_forgeConfig, _buildPath) => {
-      const projectRoot = process.cwd();
-      const modules = [
-        { name: "adblocker-electron-preload", src: path.join(projectRoot, "node_modules", "@ghostery", "adblocker-electron-preload"), dest: path.join(_buildPath, "node_modules", "@ghostery", "adblocker-electron-preload") },
-        { name: "adblocker-content", src: path.join(projectRoot, "node_modules", "@ghostery", "adblocker-content"), dest: path.join(_buildPath, "node_modules", "@ghostery", "adblocker-content") },
-        { name: "adblocker-electron", src: path.join(projectRoot, "node_modules", "@ghostery", "adblocker-electron"), dest: path.join(_buildPath, "node_modules", "@ghostery", "adblocker-electron") },
-      ];
-
-      for (const mod of modules) {
-        if (fs.existsSync(mod.src)) {
-          fs.mkdirSync(path.dirname(mod.dest), { recursive: true });
-          fs.cpSync(mod.src, mod.dest, { recursive: true });
-        }
-      }
-
-      // Copy package.json so createRequire can resolve from within asar
-      const srcPkg = path.join(projectRoot, "package.json");
-      const destPkg = path.join(_buildPath, "package.json");
-      if (fs.existsSync(srcPkg) && !fs.existsSync(destPkg)) {
-        fs.copyFileSync(srcPkg, destPkg);
-      }
-    }
-
+    asar: true
   },
   rebuildConfig: {},
   makers: [
@@ -100,8 +71,8 @@ appCategoryType: "public.app-category.video",
       config: {
         authToken: process.env.GITHUB_TOKEN,
         repository: {
-        owner: process.env.YTD_UPDATE_FEED_OWNER ?? "aki-seven",
-        name: process.env.YTD_UPDATE_FEED_REPOSITORY ?? "ytdesktop"
+          owner: process.env.YTD_UPDATE_FEED_OWNER ?? "aki-seven",
+          name: process.env.YTD_UPDATE_FEED_REPOSITORY ?? "ytdesktop"
         }
       }
     }
