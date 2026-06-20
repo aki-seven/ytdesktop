@@ -1,23 +1,19 @@
-import { ElectronBlocker } from "@ghostery/adblocker-electron";
+import { FiltersEngine, Request } from "@ghostery/adblocker";
 import { app, session } from "electron";
 import * as path from "path";
 import * as fs from "fs";
 import log from "electron-log";
 
-const createBlockerFromPrebuilt = async (fetchImpl: typeof fetch): Promise<ElectronBlocker> => {
-    // Using any to bypass incorrect type definitions
-    return (ElectronBlocker as any).fromPrebuiltAdsAndTracking(fetchImpl);
-};
+function fromElectronDetails(details: Electron.OnBeforeRequestListenerDetails | Electron.OnHeadersReceivedListenerDetails): Request {
+  const { id, url, resourceType, referrer, webContentsId } = details;
+  return Request.fromRawDetails(
+    webContentsId
+      ? { _originalRequestDetails: details, requestId: `${id}`, sourceUrl: referrer, tabId: webContentsId, type: resourceType || "other", url }
+      : { _originalRequestDetails: details, requestId: `${id}`, sourceUrl: referrer, type: resourceType || "other", url }
+  );
+}
 
-const deserializeBlocker = (data: Uint8Array): ElectronBlocker => {
-    return (ElectronBlocker as any).deserialize(data);
-};
-
-const serializeBlocker = (blocker: ElectronBlocker): Uint8Array => {
-    return (blocker as any).serialize();
-};
-
-let blocker: ElectronBlocker | null = null;
+let engine: FiltersEngine | null = null;
 let blockerInitialized = false;
 let updateInterval: NodeJS.Timeout | null = null;
 let currentSession: Electron.Session | null = null;
@@ -25,84 +21,141 @@ let currentSession: Electron.Session | null = null;
 const CACHE_PATH = path.join(app.getPath("userData"), "adblock.bin");
 const UPDATE_INTERVAL_MS = 1000 * 60 * 60 * 6;
 
-async function saveBlockerToCache(blockerInstance: ElectronBlocker): Promise<void> {
-    const serialized = serializeBlocker(blockerInstance);
-    await fs.writeFile(CACHE_PATH, Buffer.from(serialized));
+async function saveEngineToCache(engineInstance: FiltersEngine): Promise<void> {
+  const serialized = engineInstance.serialize();
+  await fs.writeFile(CACHE_PATH, Buffer.from(serialized));
+}
+
+function onBeforeRequest(details: Electron.OnBeforeRequestListenerDetails, callback: (response: Electron.Response) => void): void {
+  if (!engine) {
+    callback({});
+    return;
+  }
+  const request = fromElectronDetails(details);
+  if (engine.config.guessRequestTypeFromUrl === true && request.type === "other") {
+    request.guessTypeOfRequest();
+  }
+  if (request.isMainFrame()) {
+    callback({});
+    return;
+  }
+  const { redirect, match } = engine.match(request);
+  if (redirect) {
+    callback({ redirectURL: redirect.dataUrl });
+  } else if (match) {
+    callback({ cancel: true });
+  } else {
+    callback({});
+  }
+}
+
+function onHeadersReceived(details: Electron.OnHeadersReceivedListenerDetails, callback: (response: Electron.HeadersReceivedResponse) => void): void {
+  if (!engine) {
+    callback({ responseHeaders: details.responseHeaders });
+    return;
+  }
+  const CSP_HEADER_NAME = "content-security-policy";
+  const responseHeaders = details.responseHeaders || {};
+  if (details.resourceType === "mainFrame" || details.resourceType === "subFrame") {
+    const rawCSP = engine.getCSPDirectives(fromElectronDetails(details));
+    if (rawCSP !== undefined) {
+      const policies = rawCSP.split(";").map((c: string) => c.trim());
+      for (const [name, values] of Object.entries(responseHeaders)) {
+        if (name.toLowerCase() === CSP_HEADER_NAME) {
+          policies.push(...(values as string[]));
+          delete responseHeaders[name];
+        }
+      }
+      responseHeaders[CSP_HEADER_NAME] = [policies.join(";")];
+      callback({ responseHeaders });
+      return;
+    }
+  }
+  callback({ responseHeaders: details.responseHeaders });
+}
+
+function enableBlockingInSession(engineInstance: FiltersEngine, ses: Electron.Session): void {
+  ses.webRequest.onBeforeRequest({ urls: ["<all_urls>"] }, onBeforeRequest);
+  ses.webRequest.onHeadersReceived({ urls: ["<all_urls>"] }, onHeadersReceived);
+}
+
+function disableBlockingInSession(ses: Electron.Session): void {
+  ses.webRequest.onHeadersReceived(null);
+  ses.webRequest.onBeforeRequest(null);
 }
 
 export async function initializeAdblocker(): Promise<void> {
-    if (blockerInitialized) {
-        log.info("[Adblock] Already initialized, skipping");
-        return;
+  if (blockerInitialized) {
+    log.info("[Adblock] Already initialized, skipping");
+    return;
+  }
+
+  log.info("[Adblock] Initializing ad blocker...");
+
+  try {
+    const ses = session.fromPartition(app.isPackaged ? "persist:ytview" : "persist:ytview-dev");
+    currentSession = ses;
+
+    if (fs.existsSync(CACHE_PATH)) {
+      log.info("[Adblock] Loading cached engine from disk");
+      const cachedData = await fs.readFile(CACHE_PATH);
+      engine = FiltersEngine.deserialize(new Uint8Array(cachedData));
+    } else {
+      log.info("[Adblock] Downloading prebuilt filters (first run)");
+      engine = await FiltersEngine.fromPrebuiltAdsAndTracking(fetch);
+      await saveEngineToCache(engine);
+      log.info("[Adblock] Filters cached to disk");
     }
 
-    log.info("[Adblock] Initializing ad blocker...");
+    enableBlockingInSession(engine, ses);
+    blockerInitialized = true;
 
-    try {
-        const ses = session.fromPartition(
-            app.isPackaged ? "persist:ytview" : "persist:ytview-dev"
-        );
-        currentSession = ses;
+    scheduleFilterUpdate(ses);
 
-        if (fs.existsSync(CACHE_PATH)) {
-            log.info("[Adblock] Loading cached engine from disk");
-            const cachedData = await fs.readFile(CACHE_PATH);
-            blocker = deserializeBlocker(new Uint8Array(cachedData));
-        } else {
-            log.info("[Adblock] Downloading prebuilt filters (first run)");
-            blocker = await createBlockerFromPrebuilt(fetch);
-            await saveBlockerToCache(blocker);
-            log.info("[Adblock] Filters cached to disk");
-        }
-
-        blocker.enableBlockingInSession(ses);
-        blockerInitialized = true;
-
-        scheduleFilterUpdate(ses);
-
-        log.info("[Adblock] Successfully initialized");
-    } catch (error) {
-        log.error("[Adblock] Failed to initialize:", error);
-    }
+    log.info("[Adblock] Successfully initialized");
+  } catch (error) {
+    log.error("[Adblock] Failed to initialize:", error);
+  }
 }
 
 export function setAdBlockingEnabled(enabled: boolean): void {
-    if (!blocker || !currentSession || !blockerInitialized) {
-        log.warn("[Adblock] Cannot toggle - not initialized");
-        return;
-    }
+  if (!engine || !currentSession || !blockerInitialized) {
+    log.warn("[Adblock] Cannot toggle - not initialized");
+    return;
+  }
 
-    if (enabled) {
-        blocker.enableBlockingInSession(currentSession);
-        log.info("[Adblock] Blocking enabled");
-    } else {
-        blocker.disableBlockingInSession(currentSession);
-        log.info("[Adblock] Blocking disabled");
-    }
+  if (enabled) {
+    enableBlockingInSession(engine, currentSession);
+    log.info("[Adblock] Blocking enabled");
+  } else {
+    disableBlockingInSession(currentSession);
+    log.info("[Adblock] Blocking disabled");
+  }
 }
 
 function scheduleFilterUpdate(ses: Electron.Session): void {
-    if (updateInterval) {
-        clearInterval(updateInterval);
-    }
+  if (updateInterval) {
+    clearInterval(updateInterval);
+  }
 
-    updateInterval = setInterval(async () => {
-        if (blocker) {
-            try {
-                log.info("[Adblock] Updating filter lists...");
-                blocker = await createBlockerFromPrebuilt(fetch);
-                blocker.enableBlockingInSession(ses);
-                await saveBlockerToCache(blocker);
-                log.info("[Adblock] Filters updated and cached");
-            } catch (error) {
-                log.error("[Adblock] Failed to update filters:", error);
-            }
-        }
-    }, UPDATE_INTERVAL_MS);
+  updateInterval = setInterval(async () => {
+    if (engine) {
+      try {
+        log.info("[Adblock] Updating filter lists...");
+        engine = await FiltersEngine.fromPrebuiltAdsAndTracking(fetch);
+        disableBlockingInSession(ses);
+        enableBlockingInSession(engine, ses);
+        await saveEngineToCache(engine);
+        log.info("[Adblock] Filters updated and cached");
+      } catch (error) {
+        log.error("[Adblock] Failed to update filters:", error);
+      }
+    }
+  }, UPDATE_INTERVAL_MS);
 }
 
 export async function injectYouTubeAdHiding(webContents: Electron.WebContents): Promise<void> {
-    const youTubeAdCleaningScript = `
+  const youTubeAdCleaningScript = `
         (() => {
             if (window.__ytAdBlockingInjected) return;
             window.__ytAdBlockingInjected = true;
@@ -182,16 +235,16 @@ export async function injectYouTubeAdHiding(webContents: Electron.WebContents): 
         })();
     `;
 
-    try {
-        await webContents.executeJavaScript(youTubeAdCleaningScript);
-        log.info("[Adblock] YouTube ad hiding injected");
-    } catch (error) {
-        log.error("[Adblock] Failed to inject YouTube ad hiding:", error);
-    }
+  try {
+    await webContents.executeJavaScript(youTubeAdCleaningScript);
+    log.info("[Adblock] YouTube ad hiding injected");
+  } catch (error) {
+    log.error("[Adblock] Failed to inject YouTube ad hiding:", error);
+  }
 }
 
 export async function injectYouTubeAutoSkip(webContents: Electron.WebContents): Promise<void> {
-    const autoSkipScript = `
+  const autoSkipScript = `
         (() => {
             if (window.__ytAutoSkipInjected) return;
             window.__ytAutoSkipInjected = true;
@@ -314,14 +367,14 @@ export async function injectYouTubeAutoSkip(webContents: Electron.WebContents): 
         })();
     `;
 
-    try {
-        await webContents.executeJavaScript(autoSkipScript);
-        log.info("[Adblock] Auto-skip injected");
-    } catch (error) {
-        log.error("[Adblock] Failed to inject auto-skip:", error);
-    }
+  try {
+    await webContents.executeJavaScript(autoSkipScript);
+    log.info("[Adblock] Auto-skip injected");
+  } catch (error) {
+    log.error("[Adblock] Failed to inject auto-skip:", error);
+  }
 }
 
 export function isAdBlockerInitialized(): boolean {
-    return blockerInitialized;
+  return blockerInitialized;
 }

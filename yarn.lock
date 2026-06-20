@@ -920,58 +920,34 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ghostery/adblocker-content@npm:^2.17.3":
-  version: 2.17.3
-  resolution: "@ghostery/adblocker-content@npm:2.17.3"
+"@ghostery/adblocker-content@npm:^2.18.0":
+  version: 2.18.0
+  resolution: "@ghostery/adblocker-content@npm:2.18.0"
   dependencies:
-    "@ghostery/adblocker-extended-selectors": "npm:^2.17.3"
-  checksum: 10c0/8ba855a9531bbccbaf1b3ad03ba7aab51119157b592ca6bdc2d47559f459d4bd0d63ee3619f50ab51e22419ad2425bea68b7cfbdae14a4b6b99b10db8dc477ff
+    "@ghostery/adblocker-extended-selectors": "npm:^2.18.0"
+  checksum: 10c0/d124d58eec5e3bfab4a30127ee24e7ce4abf07ded412ebcd85a97eb4cce42d8ce06c9717f824406626b1b9a362facc47cae36c550869730bbf16d6676e11226c
   languageName: node
   linkType: hard
 
-"@ghostery/adblocker-electron-preload@npm:^2.17.3":
-  version: 2.17.3
-  resolution: "@ghostery/adblocker-electron-preload@npm:2.17.3"
-  dependencies:
-    "@ghostery/adblocker-content": "npm:^2.17.3"
-  peerDependencies:
-    electron: ">11"
-  checksum: 10c0/86c70e82dd25393c6ff935050784487c7e589d33991fe1377a35d2a829bf434a156014b1f1949957c098ce0a03399b54e4922093f8193fadebfd4837cb04a18d
+"@ghostery/adblocker-extended-selectors@npm:^2.18.0":
+  version: 2.18.0
+  resolution: "@ghostery/adblocker-extended-selectors@npm:2.18.0"
+  checksum: 10c0/a135de390c5ebf079541c1444ea99fa3cfca97254ff9f5271609aa04cbe0b848ff140d94f917d5d95d37f8143c1f771118cd14923ceb7dd79beef3e4d6fe9a25
   languageName: node
   linkType: hard
 
-"@ghostery/adblocker-electron@npm:^2.17.3":
-  version: 2.17.3
-  resolution: "@ghostery/adblocker-electron@npm:2.17.3"
+"@ghostery/adblocker@npm:^2.18.0":
+  version: 2.18.0
+  resolution: "@ghostery/adblocker@npm:2.18.0"
   dependencies:
-    "@ghostery/adblocker": "npm:^2.17.3"
-    "@ghostery/adblocker-electron-preload": "npm:^2.17.3"
-    tldts-experimental: "npm:^7.0.30"
-  peerDependencies:
-    electron: ">11"
-  checksum: 10c0/934309276cdd32c96e7d7b357d083177c12763b0ca4ad364c18a6a156e9f7e5802d23599910c47e8d167c84595fc4baf134d30626314cfaec63d7bf5567b87c3
-  languageName: node
-  linkType: hard
-
-"@ghostery/adblocker-extended-selectors@npm:^2.17.3":
-  version: 2.17.3
-  resolution: "@ghostery/adblocker-extended-selectors@npm:2.17.3"
-  checksum: 10c0/4c40402fb99d1522a787e2663e7c27010c4a80b4a5a482fd70ba123f7ed81f3956e81f0d709f6051e443ea5c641ae1eec34a41ae61918e7ca2c9f6aa4e7ce7d7
-  languageName: node
-  linkType: hard
-
-"@ghostery/adblocker@npm:^2.17.3":
-  version: 2.17.3
-  resolution: "@ghostery/adblocker@npm:2.17.3"
-  dependencies:
-    "@ghostery/adblocker-content": "npm:^2.17.3"
-    "@ghostery/adblocker-extended-selectors": "npm:^2.17.3"
+    "@ghostery/adblocker-content": "npm:^2.18.0"
+    "@ghostery/adblocker-extended-selectors": "npm:^2.18.0"
     "@ghostery/url-parser": "npm:^1.3.1"
     "@remusao/guess-url-type": "npm:^2.1.0"
     "@remusao/small": "npm:^2.1.0"
     "@remusao/smaz": "npm:^2.2.0"
-    tldts-experimental: "npm:^7.0.30"
-  checksum: 10c0/8f75695bb5c5f88e631e1afd31da562bbebbbb9ef81b62f5293aa42b7f477c2fe23b0dd96d1bedf4df4c06986bbb6dc276cdb60911281feea581459be39ffe21
+    tldts-experimental: "npm:^7.4.2"
+  checksum: 10c0/aede6f9c9c67762108f7c19b94427cd12033ee9399ceaf15b9373e7ade9ac47711a4179709208fdb1d08b95e9575c27a7a0d81c19968cd00cb8c288c3df5e4f8
   languageName: node
   linkType: hard
 
@@ -7977,12 +7953,28 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tldts-experimental@npm:^7.0.30, tldts-experimental@npm:^7.0.8":
+"tldts-core@npm:^7.4.3":
+  version: 7.4.3
+  resolution: "tldts-core@npm:7.4.3"
+  checksum: 10c0/866f9d46ef7ba80a560edaa0a659c32e0aa3b4e281694c96bcf7773f6530e107c5681c714f47d58ee1720dc5578bb168a1e8535c514de90b5907850dc1202cd8
+  languageName: node
+  linkType: hard
+
+"tldts-experimental@npm:^7.0.8":
   version: 7.0.30
   resolution: "tldts-experimental@npm:7.0.30"
   dependencies:
     tldts-core: "npm:^7.0.30"
   checksum: 10c0/35b577a2126e78710400c0b82012435d6de82302a4b484dfb762243139574881c951ac18b64d40fc94fbc030f257e10d2b1a41d6e15f1de595e3bdb4539cfd63
+  languageName: node
+  linkType: hard
+
+"tldts-experimental@npm:^7.4.2":
+  version: 7.4.3
+  resolution: "tldts-experimental@npm:7.4.3"
+  dependencies:
+    tldts-core: "npm:^7.4.3"
+  checksum: 10c0/16c6e558ae5a23c42a6913f19b58690cb0a81898235383d9a66a83f3ff48387a0d339655daf1c90112110287a976fbf1f1ac9e8f6f1682f858cb5486ed485ade
   languageName: node
   linkType: hard
 
@@ -8825,7 +8817,7 @@ __metadata:
     "@fastify/error": "npm:^4.2.0"
     "@fastify/rate-limit": "npm:^10.3.0"
     "@fastify/type-provider-typebox": "npm:^5.2.0"
-    "@ghostery/adblocker-electron": "npm:^2.17.3"
+    "@ghostery/adblocker": "npm:^2.18.0"
     "@sinclair/typebox": "npm:^0.34.48"
     "@types/electron-squirrel-startup": "npm:^1.0.2"
     "@types/node": "npm:^22.19.11"
