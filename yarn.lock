@@ -418,12 +418,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@electron/fuses@npm:^2.0.0":
-  version: 2.1.1
-  resolution: "@electron/fuses@npm:2.1.1"
+"@electron/fuses@npm:^2.1.2":
+  version: 2.1.2
+  resolution: "@electron/fuses@npm:2.1.2"
   bin:
     electron-fuses: dist/bin.js
-  checksum: 10c0/b39d91bae1b24ac81ceb1edec63d7f3c9f741495be1e5977b0c31faede28cca9c030c603b14ba142e59ed6dac706c50f1d14579a4baabbebb66338eb2c653881
+  checksum: 10c0/a7f1f355a0f94b357032f3edecc735e443431f3faacf25b19d286ab9ca4619e85f29b9471b966d60e9b3c3f1b01ee1c148ba82b93e27551e8d806484acafc0a9
   languageName: node
   linkType: hard
 
@@ -8812,7 +8812,7 @@ __metadata:
     "@electron-forge/plugin-fuses": "npm:~7.11.1"
     "@electron-forge/plugin-vite": "npm:~7.11.1"
     "@electron-forge/publisher-github": "npm:~7.11.1"
-    "@electron/fuses": "npm:^2.0.0"
+    "@electron/fuses": "npm:^2.1.2"
     "@fastify/cors": "npm:^11.2.0"
     "@fastify/error": "npm:^4.2.0"
     "@fastify/rate-limit": "npm:^10.3.0"
