@@ -6,8 +6,6 @@ import { MakerRpm } from "@electron-forge/maker-rpm";
 import { VitePlugin } from "@electron-forge/plugin-vite";
 import { FusesPlugin } from "@electron-forge/plugin-fuses";
 import { FuseV1Options, FuseVersion } from "@electron/fuses";
-import * as fs from "fs";
-import * as path from "path";
 // There is probably a better way to do this, such as fetching it directly from forge
 let makerArch = null;
 for (let i = 0; i < process.argv.length; i++) {
@@ -42,28 +40,7 @@ const config: ForgeConfig = {
     ],
     appCategoryType: "public.app-category.video",
 
-    asar: true,
-    asarUnpack: ["node_modules/@ghostery/**"],
-    packageAfterCopy: async (_forgeConfig, _buildPath) => {
-      const projectRoot = process.cwd();
-      const modules = [
-        {
-          src: path.join(projectRoot, "node_modules", "@ghostery", "adblocker-electron-preload"),
-          dest: path.join(_buildPath, "node_modules", "@ghostery", "adblocker-electron-preload")
-        },
-        {
-          src: path.join(projectRoot, "node_modules", "@ghostery", "adblocker-content"),
-          dest: path.join(_buildPath, "node_modules", "@ghostery", "adblocker-content")
-        }
-      ];
-
-      for (const mod of modules) {
-        if (fs.existsSync(mod.src)) {
-          fs.mkdirSync(path.dirname(mod.dest), { recursive: true });
-          fs.cpSync(mod.src, mod.dest, { recursive: true });
-        }
-      }
-    }
+    asar: true
   },
   rebuildConfig: {},
   makers: [
